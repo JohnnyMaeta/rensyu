@@ -1,75 +1,37 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <base target="_top">
-    <style>
-      body { font-family: 'Helvetica Neue', Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f9; }
-      h1 { color: #333; }
-      #buttons button { font-size: 24px; padding: 15px 30px; margin: 10px; cursor: pointer; border: 2px solid #4CAF50; background-color: white; color: #4CAF50; border-radius: 8px; transition: all 0.3s ease; }
-      #buttons button:hover { background-color: #4CAF50; color: white; }
-      #buttons button:disabled { cursor: not-allowed; opacity: 0.6; }
-      #result { margin-top: 30px; font-size: 20px; min-height: 50px; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-      .win { color: #d32f2f; font-weight: bold; }
-      .lose { color: #1976d2; font-weight: bold; }
-      .draw { color: #333; font-weight: bold; }
-    </style>
-  </head>
-  <body>
-    <h1>GASとじゃんけん！</h1>
-    <div id="buttons">
-      <button onclick="play('グー')">✊ グー</button>
-      <button onclick="play('チョキ')">✌️ チョキ</button>
-      <button onclick="play('パー')">✋ パー</button>
-    </div>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GAS じゃんけんアプリ - 説明書</title>
+  <style>
+    body { font-family: sans-serif; line-height: 1.6; padding: 2em; max-width: 800px; margin: 0 auto; }
+    h1, h2 { border-bottom: 1px solid #ccc; padding-bottom: 0.3em; }
+    code { background-color: #f4f4f4; padding: 2px 4px; border-radius: 3px; }
+    li { margin-bottom: 0.5em; }
+  </style>
+</head>
+<body>
+  <h1>GAS じゃんけんアプリ</h1>
+  <p>Google Apps Scriptで作成した、ブラウザで遊べるじゃんけんアプリです。対戦記録は自動的にGoogleスプレッドシートに保存されます。</p>
 
-    <div id="result">
-      <p>ボタンを押して勝負！</p>
-    </div>
+  <h2>✨ 機能</h2>
+  <ul>
+    <li>ブラウザ上でコンピュータとじゃんけんができます。</li>
+    <li>対戦結果（日時、お互いの手、勝敗）をスプレッドシートに記録します。</li>
+    <li>記録用のシートがない場合は、初回実行時に自動で作成します。</li>
+  </ul>
 
-    <script>
-      const resultDiv = document.getElementById('result');
-      const buttons = document.querySelectorAll('#buttons button');
+  <h2>🚀 使い方（ウェブアプリの公開方法）</h2>
+  <ol>
+    <li><strong>デプロイ</strong>: GASエディタ右上の「デプロイ」>「新しいデプロイ」を選択します。</li>
+    <li><strong>種類を選択</strong>: 「ウェブアプリ」を選択します。</li>
+    <li><strong>アクセス設定</strong>: 「アクセスできるユーザー」を「全員」に設定します。</li>
+    <li><strong>デプロイ実行</strong>: 「デプロイ」ボタンをクリックし、表示された<strong>ウェブアプリのURL</strong>にアクセスするとゲームを開始できます。</li>
+  </ol>
 
-      function play(userMove) {
-        // ボタンを無効化して連打を防ぐ
-        setButtonsDisabled(true);
-        resultDiv.innerHTML = '<p>ポン！...</p>';
-
-        google.script.run
-          .withSuccessHandler(showResult)
-          .withFailureHandler(showError)
-          .playGame(userMove);
-      }
-
-      function showResult(response) {
-        let resultClass = '';
-        if (response.result.includes('勝ち')) {
-          resultClass = 'win';
-        } else if (response.result.includes('負け')) {
-          resultClass = 'lose';
-        } else {
-          resultClass = 'draw';
-        }
-
-        resultDiv.innerHTML = `
-          <p>コンピュータの手は「${response.computerMove}」でした。</p>
-          <p class="${resultClass}">${response.result}</p>
-        `;
-        // ボタンを再度有効化
-        setButtonsDisabled(false);
-      }
-
-      function showError(error) {
-        resultDiv.innerHTML = `<p style="color: red;">エラーが発生しました: ${error.message}</p>`;
-        // ボタンを再度有効化
-        setButtonsDisabled(false);
-      }
-
-      function setButtonsDisabled(disabled) {
-        buttons.forEach(button => {
-          button.disabled = disabled;
-        });
-      }
-    </script>
-  </body>
+  <h2>📝 記録されるデータ</h2>
+  <p>指定したシートに以下の情報が追記されていきます。</p>
+  <ul><li>日時</li><li>あなたの手</li><li>コンピュータの手</li><li>結果</li></ul>
+</body>
 </html>

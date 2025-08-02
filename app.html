@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body { font-family: 'Helvetica Neue', Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f9; }
+      h1 { color: #333; }
+      #buttons button { font-size: 24px; padding: 15px 30px; margin: 10px; cursor: pointer; border: 2px solid #4CAF50; background-color: white; color: #4CAF50; border-radius: 8px; transition: all 0.3s ease; }
+      #buttons button:hover { background-color: #4CAF50; color: white; }
+      #buttons button:disabled { cursor: not-allowed; opacity: 0.6; }
+      #result { margin-top: 30px; font-size: 20px; min-height: 50px; padding: 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+      .win { color: #d32f2f; font-weight: bold; }
+      .lose { color: #1976d2; font-weight: bold; }
+      .draw { color: #333; font-weight: bold; }
+    </style>
+  </head>
+  <body>
+    <h1>GASとじゃんけん！</h1>
+    <div id="buttons">
+      <button onclick="play('グー')">✊ グー</button>
+      <button onclick="play('チョキ')">✌️ チョキ</button>
+      <button onclick="play('パー')">✋ パー</button>
+    </div>
+
+    <div id="result">
+      <p>ボタンを押して勝負！</p>
+    </div>
+
+    <script>
+      const resultDiv = document.getElementById('result');
+      const buttons = document.querySelectorAll('#buttons button');
+
+      function play(userMove) {
+        // ボタンを無効化して連打を防ぐ
+        setButtonsDisabled(true);
+        resultDiv.innerHTML = '<p>ポン！...</p>';
+
+        google.script.run
+          .withSuccessHandler(showResult)
+          .withFailureHandler(showError)
+          .playGame(userMove);
+      }
+
+      function showResult(response) {
+        let resultClass = '';
+        if (response.result.includes('勝ち')) {
+          resultClass = 'win';
+        } else if (response.result.includes('負け')) {
+          resultClass = 'lose';
+        } else {
+          resultClass = 'draw';
+        }
+
+        resultDiv.innerHTML = `
+          <p>コンピュータの手は「${response.computerMove}」でした。</p>
+          <p class="${resultClass}">${response.result}</p>
+        `;
+        // ボタンを再度有効化
+        setButtonsDisabled(false);
+      }
+
+      function showError(error) {
+        resultDiv.innerHTML = `<p style="color: red;">エラーが発生しました: ${error.message}</p>`;
+        // ボタンを再度有効化
+        setButtonsDisabled(false);
+      }
+
+      function setButtonsDisabled(disabled) {
+        buttons.forEach(button => {
+          button.disabled = disabled;
+        });
+      }
+    </script>
+  </body>
+</html>

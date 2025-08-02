@@ -2,8 +2,8 @@ const SHEET_NAME = 'じゃんけん記録';
 
 // 1. Webアプリにアクセスしたときに呼ばれる関数
 function doGet(e) {
-  // index.htmlをWebページとして表示します
-  return HtmlService.createHtmlOutputFromFile('index')
+  // app.htmlをWebページとして表示します
+  return HtmlService.createHtmlOutputFromFile('app')
     .setTitle('GASでじゃんけんアプリ');
 }
 
